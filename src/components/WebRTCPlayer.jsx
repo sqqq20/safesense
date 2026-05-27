@@ -60,7 +60,7 @@ export default function WebRTCPlayer() {
         );
 
         const response = await fetch(
-          "http://localhost:8081/offer",
+          "http://192.168.100.17:8081/offer",
           {
             method: "POST",
 
