@@ -106,17 +106,17 @@ export default function ActivityLog() {
 
     const url = new URL("http://192.168.100.17:5000/events");
   
-    // 🔥 start date
+    // start date
     if (startDate) {
       url.searchParams.append("startDate", startDate);
     }
   
-    // 🔥 end date
+    // end date
     if (endDate) {
       url.searchParams.append("endDate", endDate);
     }
   
-    // 🔥 event type
+    // event type
     if (eventType !== "All Events") {
       url.searchParams.append(
         "type",

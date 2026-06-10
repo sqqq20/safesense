@@ -21,7 +21,6 @@ export default function RegisterUser() {
     setShow(true);
   }, []);
 
-  // 🔥 Blur validation
   const validateField = (name, value) => {
     let error = "";
 
@@ -52,29 +51,6 @@ export default function RegisterUser() {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // 🔥 Submit validation
-  const validateAll = () => {
-    const fields = { email, username, contact, password };
-    Object.entries(fields).forEach(([key, value]) =>
-      validateField(key, value)
-    );
-
-    return Object.values(fields).every((v, i) => {
-      const keys = Object.keys(fields);
-      let err = "";
-
-      if (keys[i] === "email")
-        err = !v.includes("@") || !v.includes(".com");
-      if (keys[i] === "username")
-        err = !v || v.length > 10;
-      if (keys[i] === "contact")
-        err = !/^[0-9]{9,10}$/.test(v);
-      if (keys[i] === "password")
-        err = v.length < 6;
-
-      return !err;
-    });
-  };
 
   const isFieldValid = (name, value) => {
     if (name === "email") return value.includes("@") && value.includes(".com");

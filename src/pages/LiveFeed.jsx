@@ -36,7 +36,7 @@ export default function Dashboard() {
         return;
       }
 
-      // 🔥 RESET action if new event
+      // RESET action if new event
       if (latest.id !== currentEventId) {
         setCurrentEventId(latest.id);
         setActionTaken(false);
@@ -59,7 +59,7 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [currentEventId]);
 
-  // 🔥 COLOR
+  // COLOR
   const getStatusColor = () => {
     if (status === "Emergency") return "#ef4444";
     if (status === "Fall Detected") return "#f59e0b";
@@ -73,10 +73,10 @@ export default function Dashboard() {
     return "#22c55e";
   };
 
-  // 🔥 ENABLE LOGIC
+  // ENABLE LOGIC
   const isActionAllowed = status !== "Normal" && !actionTaken && !updating;
 
-  // 🔥 HANDLE CLICK
+  // HANDLE CLICK
   const handleUpdate = async (newStatus) => {
     if (!currentEventId || updating || actionTaken) return;
 
@@ -91,7 +91,7 @@ export default function Dashboard() {
         body: JSON.stringify({ status: newStatus })
       });
 
-      // 🔥 INSTANT UI UPDATE
+      // INSTANT UI UPDATE
       setStatus("Normal");
       setRisk("low");
       setActionTaken(true);

@@ -1,208 +1,162 @@
-    // =====================================
-    // SettingsPage.jsx
-    // =====================================
+import { useEffect, useState } from "react";
+import {
+onAuthStateChanged
+} from "firebase/auth"
+import {
+FaHouseUser,
+FaUserMinus,
+FaUserPlus
+} from "react-icons/fa"
+import { auth } from "../services/Firebase"
+import {
+    getCurrentUserData,
+    getHomeMembers,
+    updateAlertConfig,
+    updateQuietHours
+  } from "../services/UserService"
+import {
+    createHome,
+    addMemberByEmail,
+    removeMember
+  } from "../services/HomeService"
+  import {
+    FaBell,
+    FaSms,
+    FaEnvelope
+  } from "react-icons/fa"
 
-    import { useEffect, useState } from "react";
+export default function SettingsPage() {
 
-    import {
-    onAuthStateChanged
-    } from "firebase/auth";
-
-    import {
-    FaHouseUser,
-    FaUserMinus,
-    FaUserPlus
-    } from "react-icons/fa";
-
-    import { auth } from "../services/Firebase";
-
-    import {
-        getCurrentUserData,
-        getHomeMembers,
-        updateAlertConfig,
-        updateQuietHours
-      } from "../services/UserService";
-
-    import {
-        createHome,
-        addMemberByEmail,
-        removeMember
-      } from "../services/HomeService";
-
-      import {
-        FaBell,
-        FaSms,
-        FaEnvelope
-      } from "react-icons/fa";
-
-    export default function SettingsPage() {
-
-    // =====================================
-    // STATES
-    // =====================================
-    const [loading, setLoading] = useState(true);
-
-    const [userData, setUserData] = useState(null);
-
-    const [members, setMembers] = useState([]);
-
-    const [showAddModal, setShowAddModal] = useState(false);
-
-    const [memberEmail, setMemberEmail] = useState("");
-
-    const [addStatus, setAddStatus] = useState("");
-
-    const [showDNDModal, setShowDNDModal] = useState(false);
-
-    const [startHour, setStartHour] = useState("");
-
-    const [endHour, setEndHour] = useState("");
-
-    const hours = 
-    [
-      "None",
-
-      ...Array.from(
-      { length: 24 },
-      (_, i) =>
-        `${i.toString().padStart(2, "0")}:00`
+  // STATES
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [memberEmail, setMemberEmail] = useState("");
+  const [addStatus, setAddStatus] = useState("");
+  const [showDNDModal, setShowDNDModal] = useState(false);
+  const [startHour, setStartHour] = useState("");
+  const [endHour, setEndHour] = useState("");
+  const hours = 
+  [
+    "None",
+    ...Array.from(
+    { length: 24 },
+    (_, i) =>
+      `${i.toString().padStart(2, "0")}:00`
     )
   ];
 
-    // =====================================
-    // AUTH LISTENER
-    // =====================================
-    useEffect(() => {
+  // AUTH LISTENER
+  useEffect(() => {
 
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
-        if (!user) {
-            setLoading(false);
-            return;
-        }
+      if (!user) {
 
-        try {
+          setLoading(false);
+          return;
 
-            // =====================================
-            // FETCH USER DATA
-            // =====================================
-            const data = await getCurrentUserData(user.uid);
+      }
+      try {
+          // FETCH USER DATA
+          const data = await getCurrentUserData(user.uid);
+          setUserData(data);
 
-            setUserData(data);
+      } catch (error) {
+          console.log(error);
+      }
 
-        } catch (error) {
+      setLoading(false);
 
-            console.log(error);
+      });
 
-        }
+      return () => unsubscribe();
 
-        setLoading(false);
-
-        });
-
-        return () => unsubscribe();
-
-    }, []);
+  }, []);
 
 
 
 
-    // =====================================
     // FETCH MEMBERS
-    // =====================================
     useEffect(() => {
 
-        const fetchMembers = async () => {
+      const fetchMembers = async () => {
 
-        try {
+      try {
 
-            if (!userData?.homeID) return;
+          if (!userData?.homeID) return;
+          const fetchedMembers = await getHomeMembers(
+          userData.homeID,
+          userData
+          );
+          setMembers(fetchedMembers);
 
-            const fetchedMembers = await getHomeMembers(
-            userData.homeID,
-            userData
-            );
+      } catch (error) {
 
-            setMembers(fetchedMembers);
+          console.log(error);
 
-        } catch (error) {
+      }
+      };
 
-            console.log(error);
-
-        }
-
-        };
-
-        fetchMembers();
+      fetchMembers();
 
     }, [userData]);
 
-
-
-
-    // =====================================
-    // CREATE HOME
-    // =====================================
+  // CREATE HOME
     const handleCreateHome = async () => {
 
-        try {
+      try {
 
-        const newHomeID = await createHome();
+      const newHomeID = await createHome();
+      
+      setUserData(prev => ({
 
-        setUserData(prev => ({
-            ...prev,
-            homeID: newHomeID,
-            role: "host"
-        }));
+          ...prev,
+          homeID: newHomeID,
+          role: "host"
 
-        } catch (error) {
+      }));
 
-        console.log(error);
+      } catch (error) {
 
-        }
+      console.log(error);
 
+      }
     };
 
-    // =====================================
-    // TOGGLE ALERT METHOD
-    // =====================================
-    const handleToggle = async (
+// TOGGLE ALERT METHOD
+  const handleToggle = async (
+    field,
+    currentValue
+  ) => {
+
+    try {
+
+    const updatedValue = !currentValue;
+
+    // UPDATE FIRESTORE
+    await updateAlertConfig(
+        auth.currentUser.uid,
         field,
-        currentValue
-    ) => {
-    
-        try {
-    
-        const updatedValue = !currentValue;
-    
-        // =====================================
-        // UPDATE FIRESTORE
-        // =====================================
-        await updateAlertConfig(
-            auth.currentUser.uid,
-            field,
-            updatedValue
-        );
-    
-        // =====================================
-        // UPDATE UI
-        // =====================================
-        setUserData(prev => ({
-            ...prev,
-            [field]: updatedValue
-        }));
-    
-        } catch (error) {
-    
-        console.log(error);
-    
-        }
-    
-    };
+        updatedValue
+    );
 
-    // =====================================
+    // UPDATE UI
+    setUserData(prev => ({
+        ...prev,
+        [field]: updatedValue
+    }));
+
+    } catch (error) {
+
+    console.log(error);
+
+    }
+
+  };
+
 // ADD MEMBER
-// =====================================
 const handleAddMember = async () => {
 
     try {
@@ -253,9 +207,7 @@ const handleAddMember = async () => {
   
       if (result.success) {
   
-        // =====================================
         // REFRESH MEMBERS
-        // =====================================
         const fetchedMembers = await getHomeMembers(
           homeID,
           userData
@@ -273,9 +225,7 @@ const handleAddMember = async () => {
   
   };
   
-// =====================================
 // UPDATE DND
-// =====================================
 const handleUpdateDND = async () => {
 
     try {
@@ -302,9 +252,7 @@ const handleUpdateDND = async () => {
   
   };
 
-    // =====================================
     // LOADING
-    // =====================================
     if (loading) {
 
         return (
@@ -323,9 +271,7 @@ const handleUpdateDND = async () => {
     }
 
     const isHost = userData?.role === "host";
-
     const homeID = userData?.homeID || null;
-
 
     return (
 
@@ -337,31 +283,21 @@ const handleUpdateDND = async () => {
         }}>
 
 
-        {/* ===================================== */}
         {/* MAIN GRID */}
-        {/* ===================================== */}
         <div style={{
             display: "grid",
             gridTemplateColumns:   "repeat(auto-fit, minmax(320px, 1fr))",
             gap: "16px"
         }}>
 
-
-
-            {/* ===================================== */}
             {/* LEFT COLUMN */}
-            {/* ===================================== */}
             <div style={{
             display: "flex",
             flexDirection: "column",
             gap: "16px"
             }}>
 
-
-
-            {/* ===================================== */}
             {/* ACCOUNT PROFILE */}
-            {/* ===================================== */}
             <Card>
 
                 <SectionTitle text="ACCOUNT PROFILE" />
@@ -401,10 +337,7 @@ const handleUpdateDND = async () => {
 
             </Card>
 
-
-            {/* ===================================== */}
             {/* USER MANAGEMENT */}
-            {/* ===================================== */}
             <Card>
 
                 <div style={{
@@ -424,9 +357,7 @@ const handleUpdateDND = async () => {
                     </button>
                 )}
 
-                {/* ===================================== */}
                 {/* ADD MEMBER MODAL */}
-                {/* ===================================== */}
                 {showAddModal && (
                 
                 <div style={{
@@ -530,12 +461,7 @@ const handleUpdateDND = async () => {
             )}
             </div>
 
-
-
-
-                {/* ===================================== */}
                 {/* NO HOME STATE */}
-                {/* ===================================== */}
                 {isHost && !homeID ? (
 
                 <div style={{
@@ -704,13 +630,7 @@ const handleUpdateDND = async () => {
 
             </div>
 
-
-
-
-
-            {/* ===================================== */}
             {/* RIGHT COLUMN */}
-            {/* ===================================== */}
             <div style={{
             display: "flex",
             flexDirection: "column",
@@ -718,9 +638,7 @@ const handleUpdateDND = async () => {
             }}>
 
 
-            {/* ===================================== */}
             {/* ALERT CONFIG */}
-            {/* ===================================== */}
             <Card>
 
                 <SectionTitle text="ALERT CONFIGURATION" />
@@ -778,9 +696,7 @@ const handleUpdateDND = async () => {
             </Card>
 
 
-            {/* ===================================== */}
             {/* DND */}
-            {/* ===================================== */}
             <Card>
             <div style={{
               display: "flex",
@@ -974,56 +890,37 @@ const handleUpdateDND = async () => {
 
     }
 
+function Card({ children }) {
 
+  return (
+      <div style={{
+      background: "rgba(6,20,37,0.87)",
+      border: "1px solid rgba(255,255,255,0.06)",
+      borderRadius: "18px",
+      padding: "20px"
+      }}>
+      {children}
+      </div>
+  );
 
+  }
 
+function SectionTitle({ text }) {
 
-    // =====================================
-    // CARD
-    // =====================================
-    function Card({ children }) {
+  return (
+      <div style={{
+      color: "#22d3ee",
+      fontSize: "17px",
+      fontWeight: "bold",
+      letterSpacing: "1px",
+      textAlign:"left"
+      }}>
+      {text}
+      </div>
+  );
 
-    return (
-        <div style={{
-        background: "rgba(6,20,37,0.87)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        borderRadius: "18px",
-        padding: "20px"
-        }}>
-        {children}
-        </div>
-    );
+  }
 
-    }
-
-
-
-
-    // =====================================
-    // SECTION TITLE
-    // =====================================
-    function SectionTitle({ text }) {
-
-    return (
-        <div style={{
-        color: "#22d3ee",
-        fontSize: "17px",
-        fontWeight: "bold",
-        letterSpacing: "1px",
-        textAlign:"left"
-        }}>
-        {text}
-        </div>
-    );
-
-    }
-
-
-
-
-    // =====================================
-    // INPUT
-    // =====================================
     function Input({ label, value }) {
 
     return (
@@ -1057,181 +954,175 @@ const handleUpdateDND = async () => {
     }
 
 
+function RoleBadge({ role }) {
+
+  const color =
+      role === "HOST"
+      ? "#06b6d4"
+      : "#64748b";
+
+  return (
+      <div style={{
+      display: "inline-block",
+      padding: "5px 12px",
+      borderRadius: "5px",
+      background: `${color}22`,
+      border: `1px solid ${color}`,
+      color,
+      fontSize: "11px",
+      fontWeight: "bold"
+      }}>
+      {role}
+      </div>
+  );
+}
 
 
-    // =====================================
-    // ROLE BADGE
-    // =====================================
-    function RoleBadge({ role }) {
+function ToggleRow({
+    title,
+    description,
+    enabled,
+    onToggle,
+    icon
+  }) {
+      
+  return (
 
-    const color =
-        role === "HOST"
-        ? "#06b6d4"
-        : "#64748b";
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center"
+    }}>
 
-    return (
+      {/* LEFT SIDE */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        textAlign: "left",
+        gap: "14px",
+        width: "240px"
+      }}>
+
+        {/* ICON */}
         <div style={{
-        display: "inline-block",
-        padding: "5px 12px",
-        borderRadius: "5px",
-        background: `${color}22`,
-        border: `1px solid ${color}`,
-        color,
-        fontSize: "11px",
-        fontWeight: "bold"
+          color: "#22d3ee",
+          fontSize: "18px",
         }}>
-        {role}
+          {icon}
         </div>
-    );
-
-    }
 
 
-    function ToggleRow({
-        title,
-        description,
-        enabled,
-        onToggle,
-        icon
-      }) {
-      
-        return (
-      
+        {/* TEXT */}
+        <div>
+
           <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
+            fontWeight: "bold",
+            marginBottom: "4px"
           }}>
-      
-            {/* LEFT SIDE */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              gap: "14px",
-              width: "240px"
-            }}>
-      
-              {/* ICON */}
-              <div style={{
-                color: "#22d3ee",
-                fontSize: "18px",
-              }}>
-                {icon}
-              </div>
-      
-      
-              {/* TEXT */}
-              <div>
-      
-                <div style={{
-                  fontWeight: "bold",
-                  marginBottom: "4px"
-                }}>
-                  {title}
-                </div>
-      
-                <div style={{
-                  color: "#94a3b8",
-                  fontSize: "11px",
-                  lineHeight: "1.4"
-                }}>
-                  {description}
-                </div>
-      
-              </div>
-      
-            </div>
-      
-      
-      
-            {/* TOGGLE */}
-            <div
-              onClick={onToggle}
-              style={{
-                width: "52px",
-                height: "24px",
-                borderRadius: "999px",
-                background: enabled
-                  ? "#22c55e"
-                  : "#334155",
-                position: "relative",
-                cursor: "pointer",
-                transition: "0.2s"
-              }}
-            >
-      
-              <div style={{
-                width: "18px",
-                height: "18px",
-                borderRadius: "50%",
-                background: "white",
-                position: "absolute",
-                top: "3px",
-                left: enabled ? "30px" : "5px",
-                transition: "0.2s"
-              }} />
-      
-            </div>
-      
+            {title}
           </div>
+
+          <div style={{
+            color: "#94a3b8",
+            fontSize: "11px",
+            lineHeight: "1.4"
+          }}>
+            {description}
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      {/* TOGGLE */}
+      <div
+        onClick={onToggle}
+        style={{
+          width: "52px",
+          height: "24px",
+          borderRadius: "999px",
+          background: enabled
+            ? "#22c55e"
+            : "#334155",
+          position: "relative",
+          cursor: "pointer",
+          transition: "0.2s"
+        }}
+      >
+
+        <div style={{
+          width: "18px",
+          height: "18px",
+          borderRadius: "50%",
+          background: "white",
+          position: "absolute",
+          top: "3px",
+          left: enabled ? "30px" : "5px",
+          transition: "0.2s"
+        }} />
+
+      </div>
+
+    </div>
+
+  );
       
-        );
-      
-      }
+}
 
-    const buttonPrimary = {
-    background: "#06b6d4",
-    border: "none",
-    color: "white",
-    padding: "10px 18px",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px"
-    };
+const buttonPrimary = {
+  background: "#06b6d4",
+  border: "none",
+  color: "white",
+  padding: "10px 18px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  gap: "8px"
+};
 
-    const buttonPrimaryLarge = {
-    background: "#06b6d4",
-    border: "none",
-    color: "white",
-    padding: "12px 28px",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    fontSize: "15px"
-    };
+const buttonPrimaryLarge = {
+  background: "#06b6d4",
+  border: "none",
+  color: "white",
+  padding: "12px 28px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontWeight: "bold",
+  fontSize: "15px"
+};
 
-    const buttonOutline = {
-    background: "transparent",
-    border: "1px solid #06b6d4",
-    color: "#06b6d4",
-    padding: "10px 18px",
-    borderRadius: "5px",
-    cursor: "pointer",
-    width: "fit-content",
-    fontWeight: "bold"
-    };
+const buttonOutline = {
+  background: "transparent",
+  border: "1px solid #06b6d4",
+  color: "#06b6d4",
+  padding: "10px 18px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  width: "fit-content",
+  fontWeight: "bold"
+};
 
-    const removeButton = {
-      width: "32px",
-      height: "32px",
-      border: "none",
-      background: "transparent",
-      color: "#ef4444",
-      cursor: "pointer",
-      fontSize: "14px"
-    };
+const removeButton = {
+  width: "32px",
+  height: "32px",
+  border: "none",
+  background: "transparent",
+  color: "#ef4444",
+  cursor: "pointer",
+  fontSize: "14px"
+};
 
-    const timeInput = {
-        width: "100%",
-        background: "#0f172a",
-        border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: "8px",
-        padding: "12px",
-        color: "white",
-        outline: "none"
-      };
+const timeInput = {
+  width: "100%",
+  background: "#0f172a",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "8px",
+  padding: "12px",
+  color: "white",
+  outline: "none"
+};

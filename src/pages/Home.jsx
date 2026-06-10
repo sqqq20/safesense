@@ -117,21 +117,21 @@ export default function Home() {
             title="Real-time Detection"
             desc="Zero-latency stream processing ensures activity is captured instantly."
             icon={<FaBroadcastTower />}
-            color="#00f3ff"   // cyan
+            color="#00f3ff"   
           />
         
           <FeatureCard 
             title="Fall Detection"
             desc="Advanced skeletal tracking identifies posture changes and immobility."
             icon={<FaExclamationTriangle />}
-            color="#fb7185"   // red
+            color="#fb7185"   
           />
         
           <FeatureCard 
             title="Instant Alerts"
             desc="Multi-channel notification system delivers alerts immediately."
             icon={<FaBolt />}
-            color="#39ff14"   // ⭐ neon green
+            color="#39ff14"   
           />
         
         </div>

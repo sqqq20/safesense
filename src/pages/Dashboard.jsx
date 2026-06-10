@@ -22,7 +22,7 @@ export default function Dashboard() {
 
         setEvents(data);
 
-        // 🔥 SYSTEM STATUS
+        // SYSTEM STATUS
         if (data.length > 0) {
           const latest = data[0];
 
