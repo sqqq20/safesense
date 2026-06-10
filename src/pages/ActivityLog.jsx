@@ -308,7 +308,7 @@ export default function ActivityLog() {
         gap: "8px",
         flexWrap: "wrap",
         width: "100%",
-        margin: "3px"
+        margin: "3px 0"
       }}>
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
