@@ -9,7 +9,8 @@ import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import { useEffect } from "react";
 import { requestNotificationPermission, listenNotifications } from "./services/NotificationService";
-
+import HomeRequired from "./components/HomeRequired";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 navigator.serviceWorker.register("/firebase-messaging-sw.js")
   .then((reg) => {
@@ -22,8 +23,8 @@ navigator.serviceWorker.register("/firebase-messaging-sw.js")
 function App() {
 
   useEffect(() => {
-    requestNotificationPermission();   // 🔥 ask permission
-    listenNotifications();             // 🔥 listen for messages
+    requestNotificationPermission();   
+    listenNotifications();            
   }, []);
 
   return (
@@ -35,42 +36,61 @@ function App() {
         <Route path="/register" element={<RegisterUser />} />
 
         <Route
-          path="/home" element={<Home />}/>
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Pages with sidebar */}
         <Route
           path="/dashboard"
           element={
-            <Layout>
-              <Dashboard />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <HomeRequired>
+                  <Dashboard />
+                </HomeRequired>
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/live-feed"
           element={
-            <Layout>
-              <LiveFeed />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <HomeRequired>
+                  <LiveFeed />
+                </HomeRequired>
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/activity-log"
           element={
-            <Layout>
-              <ActivityLog />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <HomeRequired>
+                  <ActivityLog />
+                </HomeRequired>
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/settings"
           element={
-            <Layout>
-              <Settings />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Settings />
+              </Layout>
+            </ProtectedRoute>
           }
         />
       </Routes>
