@@ -83,7 +83,7 @@ export const registerUser = async (email, password, username, contact) => {
       contactNumber: "+60" + contact,
 
       homeID: "",
-      role: "member",            
+      role: "host",            
       notifyByPush: true,
       notifyByEmail: false,
       notifyBySMS:false,

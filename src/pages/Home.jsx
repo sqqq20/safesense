@@ -38,7 +38,7 @@ export default function Home() {
               textAlign:"left",
               fontWeight:"bold"
             }}>
-              SafeSense:<br />
+              SafeSense AI:<br />
               <span style={{ color: "#00f3ff" }}>
                 AI-Powered
               </span><br />
