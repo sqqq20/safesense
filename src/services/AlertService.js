@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.100.17:5000";
+const BASE_URL = "http://192.168.0.8:5000";
 
 // GET ALL ALERTS
 export const fetchAlerts = async () => {

@@ -90,7 +90,7 @@ export default function ActivityLog() {
   }
 
   const handleUpdate = async (id, status) => {
-    await fetch(`http://192.168.100.17:5000/update-status/${id}`, {
+    await fetch(`http://192.168.0.8:5000/update-status/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -104,7 +104,7 @@ export default function ActivityLog() {
 
   const applyFilters = async () => {
 
-    const url = new URL("http://192.168.100.17:5000/events");
+    const url = new URL("http://192.168.0.8:5000/events");
   
     // start date
     if (startDate) {
@@ -141,13 +141,9 @@ export default function ActivityLog() {
         }}>
           <div style={{
               display: "flex",
-
               flexWrap: "wrap",
-            
               gap: "12px",
-            
               alignItems: "flex-end",
-            
               width: "100%",
               justifyContent: "flex-start"
           }}>
@@ -200,12 +196,12 @@ export default function ActivityLog() {
 
       <div style={{
         overflowX: "auto",
-        width: "100%",
+        width: "95%",
         maxWidth: "100vw"
       }}>
 
       <div style={{
-          minWidth: "850px"
+          minWidth: "820px"
         }}>
 
       <div style={tableContainer}>
@@ -213,11 +209,11 @@ export default function ActivityLog() {
 
       {/* TABLE HEADER */}
       <div style={tableHeader}>
-        <span style={{ flex: 1.6 }}>Timestamp</span>
-        <span style={{ flex: 1.5 }}>Event Type</span>
-        <span style={{ flex: 1.5 }}>Status</span>
-        <span style={{ flex: 1.5 }}>Actions</span>
-        <span style={{ flex: 1.0 }}>Evidence</span>
+        <span style={{ flex: 1.2 }}>Timestamp</span>
+        <span style={{ flex: 1.1 }}>Event Type</span>
+        <span style={{ flex: 1.1 }}>Status</span>
+        <span style={{ flex: 1.3 }}>Actions</span>
+        <span style={{ flex: 0.8 }}>Evidence</span>
       </div>
 
       {/* TABLE BODY */}
@@ -308,8 +304,11 @@ export default function ActivityLog() {
       <div style={{
         display: "flex",
         justifyContent: "center",
-        margin: "10px",
-        gap: "8px"
+        alignItems: "center",
+        gap: "8px",
+        flexWrap: "wrap",
+        width: "100%",
+        margin: "3px"
       }}>
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
@@ -387,26 +386,26 @@ const buttonStyle = {
 };
 
 const tableHeader = {
-    display: "flex",
-    padding: "10px 20px",
-    background: "rgba(15, 30, 45, 0.25)",  
-    borderRadius: "5px 5px 0 0",
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-    color: "#94a3b8",
-    fontSize: "11px",
-    letterSpacing: "1px",
-    textTransform: "uppercase",
-    textAlign:"left"
+  display: "flex",
+  padding: "10px 20px",
+  background: "rgba(15, 30, 45, 0.25)",  
+  borderRadius: "5px 5px 0 0",
+  borderBottom: "1px solid rgba(255,255,255,0.08)",
+  color: "#94a3b8",
+  fontSize: "11px",
+  letterSpacing: "1px",
+  textTransform: "uppercase",
+  textAlign:"left"
 };
   
 const rowStyle = {
-    display: "flex",
-    padding: "10px 20px",   
-    borderBottom: "1px solid rgba(255,255,255,0.05)",
-    background: "rgba(15, 30, 45, 0.95)", 
-    alignItems: "center",
-    fontSize: "13px",
-    textAlign:"left"
+  padding: "10px 20px",   
+  display: "flex",
+  borderBottom: "1px solid rgba(255,255,255,0.05)",
+  background: "rgba(15, 30, 45, 0.95)", 
+  alignItems: "center",
+  fontSize: "13px",
+  textAlign:"left"
 };
 
 const pageBtn = {
@@ -419,23 +418,22 @@ const pageBtn = {
 };
 
 const tableContainer = {
-    //maxWidth: "820px",   
-    borderRadius: "5px",
-    background: "rgba(10, 25, 40, 0.6)",
-    backdropFilter: "blur(8px)"
+  borderRadius: "5px",
+  background: "rgba(10, 25, 40, 0.6)",
+  backdropFilter: "blur(8px)"
 };
 
 const filterGroup = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-  };
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+};
   
   const labelStyle = {
-    fontSize: "9px",
-    color: "#00f3ff",
-    letterSpacing: "1px",
-    fontWeight: "500",
-    textTransform: "uppercase",
-    textAlign:"left"
-  };
+  fontSize: "9px",
+  color: "#00f3ff",
+  letterSpacing: "1px",
+  fontWeight: "500",
+  textTransform: "uppercase",
+  textAlign:"left"
+};
