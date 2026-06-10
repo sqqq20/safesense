@@ -106,9 +106,7 @@ export const registerUser = async (email, password, username, contact) => {
   }
 };
 
-// =====================================
 // RESET PASSWORD
-// =====================================
 export const resetPassword = async (
   email
 ) => {

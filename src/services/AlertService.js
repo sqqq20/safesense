@@ -1,8 +1,6 @@
 const BASE_URL = "http://192.168.100.17:5000";
 
-// =========================
 // GET ALL ALERTS
-// =========================
 export const fetchAlerts = async () => {
   try {
     const response = await fetch(`${BASE_URL}/alerts`);
@@ -16,18 +14,5 @@ export const fetchAlerts = async () => {
   } catch (error) {
     console.error("❌ Error fetching alerts:", error);
     return [];
-  }
-};
-
-// =========================
-// OPTIONAL: CLEAR ALERTS
-// =========================
-export const clearAlerts = async () => {
-  try {
-    await fetch(`${BASE_URL}/alerts`, {
-      method: "DELETE",
-    });
-  } catch (error) {
-    console.error("❌ Error clearing alerts:", error);
   }
 };

@@ -1,7 +1,3 @@
-// =====================================
-// HomeService.js
-// =====================================
-
 import { auth, db } from "./Firebase";
 import {
     collection,
@@ -17,7 +13,6 @@ import {
   } from "firebase/firestore";
 
 
-// =====================================
 // CREATE HOME
 // =====================================
 export const createHome = async () => {
@@ -31,9 +26,7 @@ export const createHome = async () => {
     }
 
 
-    // =====================================
     // CREATE HOME DOCUMENT
-    // =====================================
     const homeRef = await addDoc(
       collection(db, "homes"),
       {
@@ -49,11 +42,7 @@ export const createHome = async () => {
       }
     );
 
-
-
-    // =====================================
     // UPDATE USER DOCUMENT
-    // =====================================
     const userRef = doc(
       db,
       "users",
@@ -82,9 +71,7 @@ export const createHome = async () => {
 
 };
 
-// =====================================
 // ADD MEMBER BY EMAIL
-// =====================================
 export const addMemberByEmail = async (
     homeID,
     email
@@ -92,9 +79,7 @@ export const addMemberByEmail = async (
   
     try {
   
-      // =====================================
       // FIND USER
-      // =====================================
       const q = query(
         collection(db, "users"),
         where("email", "==", email)
@@ -102,9 +87,7 @@ export const addMemberByEmail = async (
   
       const querySnapshot = await getDocs(q);
   
-      // =====================================
       // USER NOT FOUND
-      // =====================================
       if (querySnapshot.empty) {
   
         return {
@@ -114,20 +97,12 @@ export const addMemberByEmail = async (
   
       }
   
-      // =====================================
       // GET USER
-      // =====================================
       const userDoc = querySnapshot.docs[0];
-  
       const userID = userDoc.id;
-  
       const userData = userDoc.data();
   
-  
-  
-      // =====================================
       // ALREADY HAS HOME
-      // =====================================
       if (userData.homeID) {
   
         return {
@@ -137,11 +112,7 @@ export const addMemberByEmail = async (
   
       }
   
-  
-  
-      // =====================================
       // UPDATE HOME MEMBERS
-      // =====================================
       const homeRef = doc(db, "homes", homeID);
   
       await updateDoc(homeRef, {
@@ -150,11 +121,7 @@ export const addMemberByEmail = async (
   
       });
   
-  
-  
-      // =====================================
       // UPDATE USER HOME
-      // =====================================
       const userRef = doc(db, "users", userID);
   
       await updateDoc(userRef, {
@@ -183,9 +150,7 @@ export const addMemberByEmail = async (
   
   };
 
-// =====================================
 // REMOVE MEMBER
-// =====================================
 export const removeMember = async (
   homeID,
   memberUID
@@ -193,9 +158,7 @@ export const removeMember = async (
 
   try {
 
-    // =====================================
     // UPDATE HOME
-    // =====================================
     const homeRef = doc(db, "homes", homeID);
 
     await updateDoc(homeRef, {
@@ -204,11 +167,7 @@ export const removeMember = async (
 
     });
 
-
-
-    // =====================================
     // REMOVE USER HOME ACCESS
-    // =====================================
     const userRef = doc(db, "users", memberUID);
 
     await updateDoc(userRef, {

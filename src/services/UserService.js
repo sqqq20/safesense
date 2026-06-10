@@ -29,10 +29,7 @@ export const updateAlertConfig = async (
   
   };
   
-  
-  // =====================================
   // UPDATE QUIET HOURS
-  // =====================================
   export const updateQuietHours = async (
     uid,
     startTime,
@@ -67,9 +64,7 @@ export const updateAlertConfig = async (
   
   };
 
-// =====================================
 // GET CURRENT USER DATA
-// =====================================
 export const getCurrentUserData = async (uid) => {
 
   try {
@@ -94,21 +89,14 @@ export const getCurrentUserData = async (uid) => {
 
 };
 
-
-
-
-/// =====================================
 // GET HOME MEMBERS
-// =====================================
 export const getHomeMembers = async (
   homeID
 ) => {
 
   try {
 
-    // =====================================
     // GET HOME
-    // =====================================
     const homeRef = doc(db, "homes", homeID);
 
     const homeSnap = await getDoc(homeRef);
@@ -118,18 +106,12 @@ export const getHomeMembers = async (
     }
 
     const homeData = homeSnap.data();
-
     const members = [];
 
 
-
-    // =====================================
     // FETCH HOST
-    // =====================================
     const hostUID = homeData.homeAdminID;
-
     const hostRef = doc(db, "users", hostUID);
-
     const hostSnap = await getDoc(hostRef);
 
     if (hostSnap.exists()) {
@@ -148,16 +130,11 @@ export const getHomeMembers = async (
 
     }
 
-
-
-    // =====================================
     // FETCH MEMBERS
-    // =====================================
     const memberIDs = homeData.memberIDs || [];
 
     for (const uid of memberIDs) {
 
-      // prevent duplicate host
       if (uid === hostUID) continue;
 
       const userRef = doc(db, "users", uid);
