@@ -84,20 +84,12 @@ export const registerUser = async (email, password, username, contact) => {
 
       homeID: "",
       role: "member",            
-      profilePhoto: "",      
-      emergencyAlertEnabled: true,
-      minimumRiskLevel:"medium",
       notifyByPush: true,
       notifyByEmail: false,
       notifyBySMS:false,
       quietHoursStartTime: "",
       quiteHoursEndTime: "",
-      isActive: true,
-      alertEnabled: true,
       createdAt: serverTimestamp(),
-
-      // Future use
-      lastLogin: null
     });
 
     return user;

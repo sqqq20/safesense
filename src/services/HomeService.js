@@ -178,8 +178,6 @@ export const removeMember = async (
 
     });
 
-
-
     return {
       success: true
     };
