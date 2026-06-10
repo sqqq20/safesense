@@ -126,7 +126,7 @@ export default function Login() {
 
           {/* TITLE IMAGE */}
           <div style={{ textAlign: "center", marginBottom: "15px" }}>
-            <img src={title} alt="SafeSense" style={{ width: "130px" }} />
+            <img src={title} alt="SafeSense AI" style={{ width: "130px" }} />
           </div>
 
           {/* EMAIL */}
