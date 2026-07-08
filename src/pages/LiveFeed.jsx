@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const res = await fetch("http://10.160.32.213:5000/events");
+      const res = await fetch("http://172.20.10.4:5000/events");
       const alerts = await res.json();
     
       if (!alerts || alerts.length === 0) {
@@ -83,7 +83,7 @@ export default function Dashboard() {
     setUpdating(true);
 
     try {
-      await fetch(`http://10.160.32.213:5000/update-status/${currentEventId}`, {
+      await fetch(`http://172.20.10.4:5000/update-status/${currentEventId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

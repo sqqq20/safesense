@@ -17,7 +17,7 @@ export default function Dashboard() {
 
     const fetchDashboard = async () => {
       try {
-        const res = await fetch("http://10.160.32.213:5000/events");
+        const res = await fetch("http://172.20.10.4:5000/events");
         const data = await res.json();
 
         setEvents(data);

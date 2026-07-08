@@ -1,4 +1,4 @@
-const BASE_URL = "http://10.160.32.213:5000";
+const BASE_URL = "http://172.20.10.4:5000";
 
 export const fetchEvents = async () => {
   try {

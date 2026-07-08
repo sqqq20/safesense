@@ -90,7 +90,7 @@ export default function ActivityLog() {
   }
 
   const handleUpdate = async (id, status) => {
-    await fetch(`http://10.160.32.213:5000/update-status/${id}`, {
+    await fetch(`http://172.20.10.4:5000/update-status/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -104,7 +104,7 @@ export default function ActivityLog() {
 
   const applyFilters = async () => {
 
-    const url = new URL("http://10.160.32.213:5000/events");
+    const url = new URL("http://172.20.10.4:5000/events");
   
     // start date
     if (startDate) {

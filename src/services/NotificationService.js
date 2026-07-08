@@ -20,7 +20,7 @@ export const requestNotificationPermission = async () => {
       }
       console.log("UID:", user.uid);
       // SEND TOKEN TO BACKEND
-      await fetch("http://10.160.32.213:5000/register-token", {
+      await fetch("http://172.20.10.4:5000/register-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
